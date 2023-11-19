@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from PIL import Image
 
 #Si on ajoute quelque chose dans models, il doit y avoir un makemigrations dans la DB et ensuite un migrate
 class Profile(models.Model):
@@ -9,3 +10,14 @@ class Profile(models.Model):
     #Permet d'afficher un objet. Sans ça, affiche "Profile object"
     def __str__(self):
         return f'{self.user.username} Profile'
+
+    def save(self):
+        super().save()
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+
