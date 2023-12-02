@@ -6,6 +6,7 @@ from PIL import Image
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.jpg', upload_to='profile_pics')
+    symbol = models.ImageField(default='default.jpg', upload_to='symbol_pics') # Il faudrait mettre comme image par defaut l'image de profil du user
 
     #Permet d'afficher un objet. Sans ça, affiche "Profile object"
     def __str__(self):
@@ -15,9 +16,15 @@ class Profile(models.Model):
         super().save()
 
         img = Image.open(self.image.path)
+        sbl = Image.open(self.symbol.path)
 
         if img.height > 300 or img.width > 300:
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+        if sbl.height > 300 or sbl.width > 300:
+            output_size = (300, 300)
+            sbl.thumbnail(output_size)
+            sbl.save(self.symbol.path)
 

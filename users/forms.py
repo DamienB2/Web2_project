@@ -24,3 +24,9 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image']
+
+
+class SymbolUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['symbol']
