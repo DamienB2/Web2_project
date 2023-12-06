@@ -6,15 +6,28 @@
             <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
           <a class="mr-2" href="#">{{ object.author }}</a>
           <small class="text-muted">{{ object.date_posted | date:"F j, Y" }}</small>
-            {% if object.author == user %}
-                <div>
-                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
-                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
-                </div>
-            {% endif %}
         </div>
+<<<<<<< Updated upstream
         <h2 class="article-title">{{ object.title }}</h2>
         <p class="article-content">{{ object.content }}</p>
+=======
+
+        <h2 class="article-title">Game Title is : {{ object.title }}</h2>
+        <p class="article-content">The size of the grid is : {{ object.grid_size }}x{{ object.grid_size }}</p>
+        <p class="article-content">You need to align {{ object.alignment }} symbols to win</p>
+        <p class="article-content">Is your game public :  {{ object.is_public }} </p>
+        <p class="article-content">Is your game finished :  {{ object.is_finished }} </p>
+          {% if object.author == user %}
+              <p class="article-content">The code of the game is : {{ object.access_code }}</p>
+                <div>
+                    <a class="btn btn-danger btn-sm mt-1 mb-1 float-right" href="{% url 'post-delete' object.id %}">Delete</a>
+                    <a class="btn btn-secondary btn-sm mt-1 mr-1 mb-1 float-right" href="{% url 'post-update' object.id %}">Update</a>
+                </div>
+            {% endif %}
+
+
+
+>>>>>>> Stashed changes
       </div>
     </article>
 {% endblock content %}

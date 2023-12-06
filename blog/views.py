@@ -18,6 +18,10 @@ class PostListView(ListView):
     context_object_name = 'posts'
     ordering = ['-date_posted']
 
+    #Permet de récupéré les Posts(games) qui sont publiques et non finies
+    def get_queryset(self):
+        return Post.objects.filter(is_public=True, is_finished=False)
+
 
 #permet d'afficher le détail des posts quand on clique dessus
 class PostDetailView(DetailView):
