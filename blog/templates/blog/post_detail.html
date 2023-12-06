@@ -14,6 +14,7 @@
             <a class="mr-2" href="#">{{ object.author }}</a>
             <small class="text-muted">{{ object.date_posted | date:"F j, Y" }}</small>
         </div>
+
         <h2 class="article-title">Game Title is : {{ object.title }}</h2>
         <p class="article-content">The size of the grid is : {{ object.grid_size }}x{{ object.grid_size }}</p>
         <p class="article-content">You need to align {{ object.alignment }} symbols to win</p>
