@@ -27,7 +27,7 @@ class PostDetailView(DetailView):
 #permet de créé un nouveau post
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content']
+    fields = ['title', 'grid_size', 'alignment', 'is_public']
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -37,7 +37,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 #Permet d'update un post déjà existant
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content']
+    fields = ['title', 'grid_size', 'alignment', 'is_public']
 
     def form_valid(self, form):
         form.instance.author = self.request.user

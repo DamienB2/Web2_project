@@ -13,8 +13,11 @@
                 </div>
             {% endif %}
         </div>
-        <h2 class="article-title">{{ object.title }}</h2>
-        <p class="article-content">{{ object.content }}</p>
+        <h2 class="article-title">Game Title is : {{ object.title }}</h2>
+        <p class="article-content">The size of the grid is : {{ object.grid_size }}x{{ object.grid_size }}</p>
+        <p class="article-content">You need to align {{ object.alignment }} symbols to win</p>
+
+
       </div>
     </article>
 {% endblock content %}
