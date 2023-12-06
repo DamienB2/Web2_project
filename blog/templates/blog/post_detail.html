@@ -22,13 +22,13 @@
 
 
         <!--s'affiche dans les parties public des autres ou dans les parties privée et publique de nous même-->
-        {% if object.author == user or object.is_public == True %}
-
-            <small class="text-muted">Your game access code is : {{ object.access_code}}</small>
+        {% if  object.is_public == True %}
             <button class="float-right">Join Game</button>
-            <input type="text" class="float-right mr-2" value={{ object.access_code }}>
-
+            <input type="text" class="float-right mr-2" value={{ object.access_code }} readonly>
         {% else %}
+            {% if object.author == user %}
+                <small class="text-muted">Your game access code is : {{ object.access_code}}</small>
+            {% endif %}
             <button class="float-right">Join Game</button>
             <input type="text" class="float-right mr-2">
         {% endif %}
