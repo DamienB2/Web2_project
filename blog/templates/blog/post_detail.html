@@ -28,7 +28,11 @@
             <button class="float-right">Join Game</button>
             <input type="text" class="float-right mr-2" value={{ object.access_code }}>
 
+        {% else %}
+            <button class="float-right">Join Game</button>
+            <input type="text" class="float-right mr-2">
         {% endif %}
+
       </div>
     </article>
 {% endblock content %}
