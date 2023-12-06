@@ -15,6 +15,7 @@ class Post(models.Model):
     grid_size = models.IntegerField(default=3)
     alignment = models.IntegerField(default=3)
     is_public = models.BooleanField(default=True)
+    is_finished = models.BooleanField(default=False)
     access_code = models.CharField(max_length=6, default=generate_random_access_code)
     date_posted = models.DateTimeField(default=timezone.now)
     winner = models.CharField(max_length=100, default="error")

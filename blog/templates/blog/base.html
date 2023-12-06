@@ -45,8 +45,9 @@
       </nav>
     </header>
     <main role="main" class="container">
+    <h1 style="text-decoration: underline; text-align: center">List of all playable games</h1>
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md">
             {% if messages %}
                 {% for message in messages %}
                     <div class="alert alert-{{ message.tags }}">
@@ -56,24 +57,7 @@
             {% endif %}
             {% block content %}{% endblock %}
         </div>
-        {% if user.is_authenticated %}
-        <div class="col-md-4">
-          <div class="content-section">
-              <h3>Sibebar Menu</h3>
-              <ul class="list-group">
-                  <li class="list-group-item list-group-item-light">
-                      <a style="text-decoration: none" href="{% url 'post-create' %}">New Game</a>
-                  </li>
-                  <li class="list-group-item list-group-item-light">
-                      <a style="text-decoration: none" href="#">Join Private Game</a>
-                  </li>
-                  <li class="list-group-item list-group-item-light">
-                      <a style="text-decoration: none" href="{% url 'blog-statistics' %}">Statistics</a>
-                  </li>
-              </ul>
-          </div>
-        </div>
-        {% endif %}
+
       </div>
     </main>
 
