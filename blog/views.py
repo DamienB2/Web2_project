@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
 from .models import Post
 
 
@@ -21,7 +22,25 @@ class PostListView(ListView):
 
 #permet d'afficher le détail des posts quand on clique dessus
 class PostDetailView(DetailView):
+    #fonctionne mais redirige le user directement vers le home car le mdp n'est pas entré
     model = Post
+    template_name = 'post_detail.html'  # Remplacez 'your_template_name.html' par le nom de votre modèle
+
+    def get(self, request, *args, **kwargs):
+
+        # Récupérer le mot de passe du formulaire
+        password_from_form = self.request.GET.get('pwd')
+
+        # Récupérer l'objet Post
+        post_object = self.get_object()
+
+        # Comparer le mot de passe
+        if password_from_form == post_object.access_code:
+            # Mot de passe correct, vous pouvez rediriger l'utilisateur vers la vue détaillée du message
+            return redirect('post-play')
+        else:
+            # Mot de passe incorrect, vous pouvez rediriger l'utilisateur vers une autre page ou afficher un message d'erreur
+            return redirect('post-detail')  # Remplacez 'ma_page_d_erreur' par le nom de votre page d'erreur
 
 
 #permet de créé un nouveau post
@@ -60,6 +79,10 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.author:
             return True
         return False
+
+def PostPlay(request):
+    post = Post.pk  
+    return render(request, 'blog/post_play.html', {'title': 'Game', 'post': post})
 
 
 def statistics(request):
