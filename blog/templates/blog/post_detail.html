@@ -22,7 +22,8 @@
 
         {% if user.is_authenticated %}
             <!--s'affiche dans les parties public des autres ou dans les parties privée et publique de nous même-->
-          <form method="GET">
+          <form method="POST">
+            {% csrf_token %}
             {% if  object.is_public == True %}
                 <input type="submit" class="btn-success float-right" value="Join game">
                 <input type="text" id="id_password" name="pwd" class="float-right mr-2" value={{ object.access_code }} readonly>

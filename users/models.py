@@ -12,8 +12,8 @@ class Profile(models.Model):
     def __str__(self):
         return f'{self.user.username} Profile'
 
-    def save(self):
-        super().save()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
         img = Image.open(self.image.path)
         sbl = Image.open(self.symbol.path)
@@ -27,4 +27,3 @@ class Profile(models.Model):
             output_size = (300, 300)
             sbl.thumbnail(output_size)
             sbl.save(self.symbol.path)
-
