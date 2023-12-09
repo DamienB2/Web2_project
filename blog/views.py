@@ -69,7 +69,7 @@ def PostPlay(request, pk):
         # Comparer le mot de passe
         if password_from_form == post.access_code:
             #besoin de modifier le redirect
-            return redirect('profile')
+            return redirect('post-play', post.pk)
         else:
             messages.warning(request, f'You entered the wrong password.')
             return redirect('post-detail', post.pk)
@@ -80,3 +80,6 @@ def PostPlay(request, pk):
 
 def statistics(request):
     return render(request, 'blog/statistics.html', {'title': 'Statistics'})
+
+def play(request, pk):
+    return render(request, 'blog/post_play.html', {'title': 'Game'}, )
