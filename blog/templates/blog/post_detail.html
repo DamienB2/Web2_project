@@ -10,27 +10,27 @@
                 </div>
             {% endif %}
 
-            <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
-            <a class="mr-2" href="#">{{ object.author }}</a>
-            <small class="text-muted">{{ object.date_posted | date:"F j, Y" }}</small>
+            <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+            <a class="mr-2" href="#">{{ post.author }}</a>
+            <small class="text-muted">{{ post.date_posted | date:"F j, Y" }}</small>
         </div>
 
-        <h2 class="article-title">Game Title is : {{ object.title }}</h2>
-        <p class="article-content">The size of the grid is : {{ object.grid_size }}x{{ object.grid_size }}</p>
-        <p class="article-content">You need to align {{ object.alignment }} symbols to win</p>
-        <p class="article-content">Is your game public : {{ object.is_public }}</p>
+        <h2 class="article-title">Game Title is : {{ post.title }}</h2>
+        <p class="article-content">The size of the grid is : {{ post.grid_size }}x{{ post.grid_size }}</p>
+        <p class="article-content">You need to align {{ post.alignment }} symbols to win</p>
+        <p class="article-content">Is your game public : {{ post.is_public }}</p>
 
         {% if user.is_authenticated %}
             <!--s'affiche dans les parties public des autres ou dans les parties privée et publique de nous même-->
           <form method="POST">
             {% csrf_token %}
-            {% if  object.is_public == True %}
+            {% if  post.is_public == True %}
                 <input type="submit" class="btn-success float-right" value="Join game">
-                <input type="text" id="id_password" name="pwd" class="float-right mr-2" value={{ object.access_code }} readonly>
+                <input type="text" id="id_password" name="pwd" class="float-right mr-2" value={{ post.access_code }} readonly>
 
             {% else %}
-                {% if object.author == user %}
-                    <small class="text-muted">Your game access code is : {{ object.access_code}}</small>
+                {% if post.author == user %}
+                    <small class="text-muted">Your game access code is : {{ post.access_code}}</small>
                 {% endif %}
 
                 <input type="submit" class="btn-success float-right" value="Join game">

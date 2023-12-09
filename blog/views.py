@@ -1,6 +1,8 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.urls import reverse
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from .models import Post
 
@@ -18,11 +20,6 @@ class PostListView(ListView):
     template_name = 'blog/home.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
-
-
-#permet d'afficher le détail des posts quand on clique dessus
-class PostDetailView(DetailView):
-    model = Post
 
 
 #permet de créé un nouveau post
@@ -62,8 +59,23 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
-def PostPlay(request):
-    return render(request, 'blog/post_play.html', {'title': 'Game'})
+def PostPlay(request, pk):
+    post = Post.objects.get(pk=pk)
+
+    if request.method == 'POST':
+
+        password_from_form = request.POST.get('pwd')
+
+
+        # Comparer le mot de passe
+        if password_from_form == post.access_code:
+            return redirect('profile')
+        else:
+            messages.warning(request, f'You entered the wrong password.')
+            return redirect('post-detail', post.pk)
+
+
+    return render(request, 'blog/post_detail.html', {'title': 'Details', 'post': post})
 
 
 def statistics(request):
