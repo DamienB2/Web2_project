@@ -66,9 +66,9 @@ def PostPlay(request, pk):
 
         password_from_form = request.POST.get('pwd')
 
-
         # Comparer le mot de passe
         if password_from_form == post.access_code:
+            #besoin de modifier le redirect
             return redirect('profile')
         else:
             messages.warning(request, f'You entered the wrong password.')

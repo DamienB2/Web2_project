@@ -31,10 +31,12 @@
             {% else %}
                 {% if post.author == user %}
                     <small class="text-muted">Your game access code is : {{ post.access_code}}</small>
+                    <input type="submit" class="btn-success float-right" value="Join game">
+                    <input type="text" id="id_password" name="pwd" class="float-right mr-2" value={{ post.access_code }} readonly>
+                {% else %}
+                    <input type="submit" class="btn-success float-right" value="Join game">
+                    <input type="text" id="id_password" name="pwd" class="float-right mr-2">
                 {% endif %}
-
-                <input type="submit" class="btn-success float-right" value="Join game">
-                <input type="text" id="id_password" name="pwd" class="float-right mr-2">
             {% endif %}
           {% endif %}
           </form>
