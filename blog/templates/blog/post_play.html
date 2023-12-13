@@ -2,7 +2,18 @@
 {% block content %}
     <div class="content-section">
          <h1>HELLO YOU ARE IN THE GAME</h1>
-         <h1>Tic Tac Toe Grid</h1>
-    <!-- https://codepen.io/gaearon/pen/gWWZgR -->
     </div>
+    <div style="display: flex; justify-content: center; align-items: center; height: 50vh;">
+        <table>
+            {% for row in nbCases %}
+            <tr>
+                {% for col in nbCases %}
+                <td>
+                    <button style="width: 50px; height: 50px;" id="BlockBtn{{ col }}_{{ row }}"></button>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+        </div>
 {% endblock content %}

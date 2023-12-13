@@ -14,7 +14,7 @@ def home(request):
     return render(request, 'blog/home.html', context)
 
 
-#permet d'afficher les posts sur la page principale
+# permet d'afficher les posts sur la page principale
 class PostListView(ListView):
     model = Post
     template_name = 'blog/home.html'
@@ -22,7 +22,7 @@ class PostListView(ListView):
     ordering = ['-date_posted']
 
 
-#permet de créé un nouveau post
+# permet de créé un nouveau post
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     fields = ['title', 'grid_size', 'alignment', 'is_public']
@@ -32,7 +32,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-#Permet d'update un post déjà existant
+# Permet d'update un post déjà existant
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
     fields = ['title', 'grid_size', 'alignment', 'is_public']
@@ -48,7 +48,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return False
 
 
-#Permet de supprimer un post
+# Permet de supprimer un post
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     success_url = '/'
@@ -59,6 +59,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+
 def PostPlay(request, pk):
     post = Post.objects.get(pk=pk)
 
@@ -68,12 +69,11 @@ def PostPlay(request, pk):
 
         # Comparer le mot de passe
         if password_from_form == post.access_code:
-            #besoin de modifier le redirect
+            # besoin de modifier le redirect
             return redirect('post-play', post.pk)
         else:
             messages.warning(request, f'You entered the wrong password.')
             return redirect('post-detail', post.pk)
-
 
     return render(request, 'blog/post_detail.html', {'title': 'Details', 'post': post})
 
@@ -81,5 +81,8 @@ def PostPlay(request, pk):
 def statistics(request):
     return render(request, 'blog/statistics.html', {'title': 'Statistics'})
 
+
 def play(request, pk):
-    return render(request, 'blog/post_play.html', {'title': 'Game'}, )
+    post = Post.objects.get(pk=pk)
+    tiles = post.grid_size
+    return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles)})
