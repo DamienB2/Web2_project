@@ -85,4 +85,4 @@ def statistics(request):
 def play(request, pk):
     post = Post.objects.get(pk=pk)
     tiles = post.grid_size
-    return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles)})
+    return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})

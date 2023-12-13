@@ -12,7 +12,7 @@ def generate_random_access_code():
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
-    grid_size = models.IntegerField(default=3)
+    grid_size = models.IntegerField(default=3) #doit avoir une valeur minimale car sinon peut recevoir des valeurs négatives
     alignment = models.IntegerField(default=3)
     is_public = models.BooleanField(default=True)
     is_finished = models.BooleanField(default=False)

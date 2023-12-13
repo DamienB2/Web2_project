@@ -1,19 +1,37 @@
 {% extends "blog/base.html" %}
 {% block content %}
     <div class="content-section">
-         <h1>HELLO YOU ARE IN THE GAME</h1>
-    </div>
-    <div style="display: flex; justify-content: center; align-items: center; height: 50vh;">
-        <table>
-            {% for row in nbCases %}
-            <tr>
-                {% for col in nbCases %}
-                <td>
-                    <button style="width: 50px; height: 50px;" id="BlockBtn{{ col }}_{{ row }}"></button>
-                </td>
-                {% endfor %}
-            </tr>
-            {% endfor %}
-        </table>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <div style="flex: 1; text-align: right;">
+                <h2>{{ post.author }}</h2>
+            </div>
+            <div style="width: 10%; text-align: center;">
+                <h2>VS</h2>
+            </div>
+            <div style="flex: 1; text-align: left;">
+                <h2>The other player</h2>
+            </div>
         </div>
+        <div style="text-align: center; margin-bottom: 25px;">
+            {% if post.is_public == False %}
+                <small>The game access code is: {{ post.access_code }}</small>
+            {% endif %}
+        </div>
+
+
+        <!-- zone de jeu -->
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <table>
+                {% for row in nbCases %}
+                <tr>
+                    {% for col in nbCases %}
+                    <td>
+                        <button style="width: 50px; height: 50px;" id="BlockBtn{{ col }}_{{ row }}"></button>
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
 {% endblock content %}
