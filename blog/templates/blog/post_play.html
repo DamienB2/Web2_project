@@ -43,9 +43,9 @@
 
             if (Img.src === '') {
                 if (currentPlayer === 'X') {
-                    Img.src = '{{ post.author.profile.image.url }}';
+                    Img.src = '{{ post.author.profile.symbol.url }}';
                 } else {
-                    Img.src = '{{ user.profile.image.url }}';
+                    Img.src = '{{ user.profile.symbol.url }}';
                 }
 
                 movesCount++;
