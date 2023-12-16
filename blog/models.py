@@ -1,6 +1,7 @@
 import random
 
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -14,8 +15,8 @@ def generate_random_access_code():
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
-    grid_size = models.IntegerField(default=3) #doit avoir une valeur minimale car sinon peut recevoir des valeurs négatives
-    alignment = models.IntegerField(default=3)
+    grid_size = models.IntegerField(default=3, validators=[MinValueValidator(3)])
+    alignment = models.IntegerField(default=3, validators=[MinValueValidator(3)])
     is_public = models.BooleanField(default=True)
     is_finished = models.BooleanField(default=False)
     access_code = models.CharField(max_length=6, default=generate_random_access_code)
