@@ -34,76 +34,24 @@
         </div>
     </div>
 
-     <script>
+    <script>
         var currentPlayer = 'X';
         var movesCount = 0;
 
         function handleClick(row, col) {
             var Img = document.getElementById('BlockImg' + col + '_' + row);
+
             if (Img.src === '') {
-                Img.src = "{{ post.author.profile.image.url }}";
+                if (currentPlayer === 'X') {
+                    Img.src = '{{ post.author.profile.image.url }}';
+                } else {
+                    Img.src = '{{ user.profile.image.url }}';
+                }
+
                 movesCount++;
-
-                if (checkWin(row, col)) {
-                    alert(currentPlayer + ' wins!');
-                    // Vous pouvez ajouter du code ici pour gérer la fin du jeu
-                } else if (movesCount === {{ nbCases|length }} * {{ nbCases|length }}) {
-                    alert('Match nul!');
-                    // Vous pouvez ajouter du code ici pour gérer la fin du jeu
-                } else {
-                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                }
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             }
-        }
-
-        function checkWin(row, col) {
-            // Vérifier l'alignement horizontal
-            if (checkLine(row, col, 0, 1) || checkLine(row, col, 0, -1)) {
-                return true;
-            }
-
-            // Vérifier l'alignement vertical
-            if (checkLine(row, col, 1, 0) || checkLine(row, col, -1, 0)) {
-                return true;
-            }
-
-            // Vérifier l'alignement en diagonale (\)
-            if (checkLine(row, col, 1, 1) || checkLine(row, col, -1, -1)) {
-                return true;
-            }
-
-            // Vérifier l'alignement en diagonale (/)
-            if (checkLine(row, col, 1, -1) || checkLine(row, col, -1, 1)) {
-                return true;
-            }
-
-            return false;
-        }
-
-        function checkLine(row, col, rowIncrement, colIncrement) {
-            var count = 0;
-            var symbol = currentPlayer;
-
-            // Vérifier vers de la droite et vers la gauche
-            for (var i = -5; i <= 5; i++) {
-                var newRow = row + i * rowIncrement;
-                var newCol = col + i * colIncrement;
-
-                if (isValidCell(newRow, newCol) && document.getElementById('BlockImg' + newCol + '_' + newRow).src === "{{ post.author.profile.image.url }}") {
-                    count++;
-                    if (count === 6) {
-                        return true;
-                    }
-                } else {
-                    count = 0;
-                }
-            }
-
-            return false;
-        }
-
-        function isValidCell(row, col) {
-            return row >= 0 && row < {{ nbCases|length }} && col >= 0 && col < {{ nbCases|length }};
         }
     </script>
+
 {% endblock content %}
