@@ -23,7 +23,8 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     winner = models.CharField(max_length=100, default="error")
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    location_list = ArrayField(models.CharField(max_length=100), blank=True, null=True)
+    is_ko = models.BooleanField(default=False)
+
 
 
 
