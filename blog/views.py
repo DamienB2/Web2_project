@@ -98,10 +98,6 @@ def play(request, pk):
             except Post.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'Post not found'})
         else:
-            return JsonResponse({'message': getData(pk)})
+            return JsonResponse({'played_positions': post.played_positions})
 
     return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})
-
-def getData(pk):
-    played_positions = Post.objects.get(pk=pk).played_positions
-    return played_positions

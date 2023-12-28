@@ -57,27 +57,42 @@
         }
 
         //get all position each second
-        function refreshGameBoard() {
+        function getPlayedPositions() {
             var xhr = new XMLHttpRequest();
-                xhr.open('POST', '{% url 'post-play' post.id %}', true);
+            xhr.open('POST', '{% url 'post-play' post.id %}', true);
 
-                // Ajout du jeton CSRF à l'en-tête de la requête
-                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        // Récupération réussie des données du serveur
-                        var responseData = JSON.parse(xhr.responseText);
-                        console.log('Received data from the server:', responseData);
-                    } else {
-                        // Gestion des erreurs
-                        console.error('Failed to receive data from the server.');
+            // Ajout du jeton CSRF à l'en-tête de la requête
+            xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+
+                    // Récupération réussie des données du serveur
+                    var listOfPositions = JSON.parse(xhr.responseText);
+                    var playedPositionsArray = listOfPositions.played_positions;
+
+                    for (let i = 0; i < playedPositionsArray.length; i++) {
+                        var positionParts = position.split(';');
+                        var currentPlayer = positionParts[0];
+                        var buttonId = positionParts[1];
+
+                        // Mise à jour du bouton avec l'ID correspondant
+                        var Img = document.getElementById(buttonId);
+                        if (Img) {
+                            Img.src = currentPlayer === 'X' ? '{{ post.author.profile.symbol.url }}' : '{{ user.profile.symbol.url }}';
+                        }
                     }
-                };
-                xhr.send();
+
+
+                } else {
+                    // Gestion des erreurs
+                    console.error('Failed to receive data from the server.');
+                }
+            };
+            xhr.send();
         }
 
         // Appeler la fonction updateEverySecond toutes les 1000 millisecondes (1 seconde)
-        setInterval(refreshGameBoard, 2000);
+        setInterval(getPlayedPositions, 1000);
 
 
         //When a button is clicked send data to the database
