@@ -38,6 +38,7 @@
     <script>
         var currentPlayer = 'X';
         var movesCount = 0;
+        var postID = {{ post.id }}
 
         function getCookie(name) {
             var cookieValue = null;
@@ -55,6 +56,31 @@
             return cookieValue;
         }
 
+        //get all position each second
+        function refreshGameBoard() {
+            var xhr = new XMLHttpRequest();
+                xhr.open('POST', '{% url 'post-play' post.id %}', true);
+
+                // Ajout du jeton CSRF à l'en-tête de la requête
+                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // Récupération réussie des données du serveur
+                        var responseData = JSON.parse(xhr.responseText);
+                        console.log('Received data from the server:', responseData);
+                    } else {
+                        // Gestion des erreurs
+                        console.error('Failed to receive data from the server.');
+                    }
+                };
+                xhr.send();
+        }
+
+        // Appeler la fonction updateEverySecond toutes les 1000 millisecondes (1 seconde)
+        setInterval(refreshGameBoard, 2000);
+
+
+        //When a button is clicked send data to the database
         function handleClick(row, col) {
             var Img = document.getElementById('BlockImg' + col + '_' + row);
 
@@ -85,7 +111,7 @@
 
                 var formData = new FormData();
                 formData.append('position_id', currentPlayer + ';BlockImg' + col + '_' + row);
-                
+
                 // Envoyez les données de formulaire
                 xhr.send(new URLSearchParams(formData));
 
