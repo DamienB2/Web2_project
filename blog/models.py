@@ -23,7 +23,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     winner = models.CharField(max_length=100, default="error")
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    is_ko = models.BooleanField(default=False)
+    played_positions = models.JSONField(default=list)
 
 
 
