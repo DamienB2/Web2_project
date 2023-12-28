@@ -69,7 +69,6 @@
                 // Envoi de l'ID du bouton à la vue Django via AJAX avec le jeton CSRF
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '{% url 'post-play' post.id %}', true);
-                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
                 // Ajout du jeton CSRF à l'en-tête de la requête
                 xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
@@ -83,9 +82,12 @@
                         console.error('Failed to update position.');
                     }
                 };
-                xhr.send(JSON.stringify({
-                    'position_id': currentPlayer + ';BlockImg' + col + '_' + row
-                }));
+
+                var formData = new FormData();
+                formData.append('position_id', currentPlayer + ';BlockImg' + col + '_' + row);
+                
+                // Envoyez les données de formulaire
+                xhr.send(new URLSearchParams(formData));
 
                 movesCount++;
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';

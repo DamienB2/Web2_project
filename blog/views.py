@@ -83,7 +83,7 @@ def statistics(request):
     return render(request, 'blog/statistics.html', {'title': 'Statistics'})
 
 
-def play(request, pk, position_id=None):
+def play(request, pk):
     post = Post.objects.get(pk=pk)
     tiles = post.grid_size
 
@@ -96,5 +96,5 @@ def play(request, pk, position_id=None):
         except Post.DoesNotExist:
             return JsonResponse({'status': 'error', 'message': 'Post not found'})
 
-    return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post, 'position_id': position_id})
+    return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})
 
