@@ -25,8 +25,10 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     played_positions = models.JSONField(default=list)
 
-
-
+    def add_position(self, position):
+        # Méthode pour ajouter une position à la liste
+        self.played_positions.append(position)
+        self.save()
 
 
     def __str__(self):

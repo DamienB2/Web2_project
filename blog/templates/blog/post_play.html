@@ -16,6 +16,7 @@
             {% if post.is_public == False %}
                 <small>The game access code is: {{ post.access_code }}</small>
             {% endif %}
+            <h2>{{ position_id }}</h2>
         </div>
 
         <!-- zone de jeu -->
@@ -38,20 +39,57 @@
         var currentPlayer = 'X';
         var movesCount = 0;
 
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Recherche du jeton CSRF dans le cookie
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         function handleClick(row, col) {
             var Img = document.getElementById('BlockImg' + col + '_' + row);
 
             if (Img.src === '') {
+                // Mise à jour de l'image
                 if (currentPlayer === 'X') {
                     Img.src = '{{ post.author.profile.symbol.url }}';
                 } else {
                     Img.src = '{{ user.profile.symbol.url }}';
                 }
 
+                // Envoi de l'ID du bouton à la vue Django via AJAX avec le jeton CSRF
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '{% url 'post-play' post.id %}', true);
+                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+                // Ajout du jeton CSRF à l'en-tête de la requête
+                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        // Mise à jour réussie
+                        console.log('Position updated successfully.');
+                    } else {
+                        // Gestion des erreurs
+                        console.error('Failed to update position.');
+                    }
+                };
+                xhr.send(JSON.stringify({
+                    'position_id': currentPlayer + ';BlockImg' + col + '_' + row
+                }));
+
                 movesCount++;
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             }
         }
     </script>
-
 {% endblock content %}

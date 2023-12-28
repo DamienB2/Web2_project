@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -82,7 +83,18 @@ def statistics(request):
     return render(request, 'blog/statistics.html', {'title': 'Statistics'})
 
 
-def play(request, pk):
+def play(request, pk, position_id=None):
     post = Post.objects.get(pk=pk)
     tiles = post.grid_size
-    return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})
+
+    if request.method == 'POST':
+        position_id = request.POST.get('position_id')
+
+        try:
+            post.add_position(position_id)
+            return JsonResponse({'status': 'success'})
+        except Post.DoesNotExist:
+            return JsonResponse({'status': 'error', 'message': 'Post not found'})
+
+    return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post, 'position_id': position_id})
+
