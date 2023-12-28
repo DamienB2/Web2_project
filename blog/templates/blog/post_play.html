@@ -71,7 +71,7 @@
                     var playedPositionsArray = listOfPositions.played_positions;
 
                     for (let i = 0; i < playedPositionsArray.length; i++) {
-                        var positionParts = position.split(';');
+                        var positionParts = playedPositionsArray[i].split(';');
                         var currentPlayer = positionParts[0];
                         var buttonId = positionParts[1];
 
