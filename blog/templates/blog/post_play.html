@@ -33,12 +33,18 @@
                 {% endfor %}
             </table>
         </div>
+        <!-- bas de page -->
+        <div class="d-flex justify-content-center mt-5">
+            <button class="btn btn-danger">Surrender</button>
+        </div>
     </div>
 
     <script>
         var currentPlayer = 'X';
         var movesCount = 0;
-        var postID = {{ post.id }}
+        var postID = {{ post.id }};
+        var nbCases = {{ post.grid_size }}
+
 
         function getCookie(name) {
             var cookieValue = null;
@@ -107,6 +113,10 @@
                     Img.src = '{{ user.profile.symbol.url }}';
                 }
 
+                if (checkWinner()) {
+                    alert(currentPlayer + ' wins!');
+                }
+
                 // Envoi de l'ID du bouton à la vue Django via AJAX avec le jeton CSRF
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '{% url 'post-play' post.id %}', true);
@@ -130,9 +140,70 @@
                 // Envoyez les données de formulaire
                 xhr.send(new URLSearchParams(formData));
 
+                //checkWinner()
                 movesCount++;
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             }
         }
+
+        function checkWinner() {
+        // Define the number of consecutive symbols required for a win
+        var alignment = {{ post.alignment }};
+        // Check rows, columns, and diagonals for a winner
+        for (var i = 0; i < nbCases; i++) {
+            for (var j = 0; j < nbCases; j++) {
+
+                // Check horizontal alignment
+                if (checkAlignment(i, j, 0, 1, alignment)) {
+                    return true;
+                }
+
+                // Check vertical alignment
+                if (checkAlignment(i, j, 1, 0, alignment)) {
+                    return true;
+                }
+
+                // Check diagonal alignment (top-left to bottom-right)
+                if (checkAlignment(i, j, 1, 1, alignment)) {
+                    return true;
+                }
+
+                // Check diagonal alignment (bottom-left to top-right)
+                if (checkAlignment(i, j, -1, 1, alignment)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    function checkAlignment(row, col, rowIncrement, colIncrement, alignment) {
+
+        var symbol = currentPlayer === 'X' ? '{{ post.author.profile.symbol.url }}' : '{{ user.profile.symbol.url }}';
+
+        for (var i = 0; i < alignment; i++) {
+            var currentRow = row + i * rowIncrement;
+            var currentCol = col + i * colIncrement;
+
+            // Check if the current position is within the board bounds
+            if (currentRow < 0 || currentRow >= nbCases || currentCol < 0 || currentCol >= nbCases) {
+                return false;
+            }
+
+            var Img = document.getElementById('BlockImg' + currentCol + '_' + currentRow);
+
+            var ImgSrc = Img.src;
+
+            // Img = localhost || symbol = juste media/lienamige
+            if (!(ImgSrc.includes(symbol))) {
+                return false;
+            }
+        }
+
+        // All symbols in the alignment are the same
+        return true;
+    }
+
     </script>
 {% endblock content %}
