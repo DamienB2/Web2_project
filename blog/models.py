@@ -31,6 +31,9 @@ class Post(models.Model):
         self.played_positions.append(position)
         self.save()
 
+    def add_opponent(self, opponent):
+        self.opponent = opponent
+        self.save()
 
 
     def __str__(self):

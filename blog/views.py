@@ -64,6 +64,7 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 def PostPlay(request, pk):
     post = Post.objects.get(pk=pk)
+    user = request.user.username
 
     if request.method == 'POST':
 
@@ -71,7 +72,17 @@ def PostPlay(request, pk):
 
         # Comparer le mot de passe
         if password_from_form == post.access_code:
-            # besoin de modifier le redirect
+            # si la personne qui rejoins n'est pas l'author
+            if user != post.author.username:
+                # si il n'y a pas encore d'opposant
+                if post.opponent == "No opponent":
+                    post.add_opponent(user)
+                elif post.opponent == user:
+                    return redirect('post-play', post.pk)
+                else:
+                    messages.warning(request, f'The game is full.')
+                    return redirect('post-detail', post.pk)
+
             return redirect('post-play', post.pk)
         else:
             messages.warning(request, f'You entered the wrong password.')
