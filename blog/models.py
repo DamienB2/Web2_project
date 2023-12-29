@@ -1,6 +1,5 @@
 import random
 
-from django.contrib.postgres.fields import ArrayField
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils import timezone
@@ -21,8 +20,8 @@ class Post(models.Model):
     is_finished = models.BooleanField(default=False)
     access_code = models.CharField(max_length=6, default=generate_random_access_code)
     date_posted = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    opponent = models.CharField(max_length=100, default="No opponent")
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author')
+    opponent = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='opponent')
     winner = models.CharField(max_length=100, default="No winner")
     played_positions = models.JSONField(default=list)
 

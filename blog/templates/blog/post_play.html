@@ -119,10 +119,6 @@
                     Img.src = '{{ user.profile.symbol.url }}';
                 }
 
-                if (checkWinner()) {
-                    alert(currentPlayer + ' wins!');
-                }
-
                 // Envoi de l'ID du bouton à la vue Django via AJAX avec le jeton CSRF
                 var xhr = new XMLHttpRequest();
                 xhr.open('POST', '{% url 'post-play' post.id %}', true);
@@ -146,7 +142,10 @@
                 // Envoyez les données de formulaire
                 xhr.send(new URLSearchParams(formData));
 
-                //checkWinner()
+                if (checkWinner()) {
+                    alert(currentPlayer + ' wins!');
+                }
+
                 movesCount++;
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             }
