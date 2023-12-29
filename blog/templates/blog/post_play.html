@@ -9,7 +9,7 @@
                 <h2>VS</h2>
             </div>
             <div style="flex: 1; text-align: left;">
-                <h2>The other player</h2>
+                <h2 id="opponent_title">{{ post.opponent }}</h2>
             </div>
         </div>
         <div style="text-align: center; margin-bottom: 25px;">
@@ -71,10 +71,14 @@
             xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
             xhr.onload = function () {
                 if (xhr.status === 200) {
+                    var datas = JSON.parse(xhr.responseText);
+
+                    var opponent_title = document.getElementById("opponent_title");
+                        opponent_title.textContent = datas.opponent;
 
                     // Récupération réussie des données du serveur
-                    var listOfPositions = JSON.parse(xhr.responseText);
-                    var playedPositionsArray = listOfPositions.played_positions;
+
+                    var playedPositionsArray = datas.played_positions;
 
                     for (let i = 0; i < playedPositionsArray.length; i++) {
                         var positionParts = playedPositionsArray[i].split(';');
@@ -95,6 +99,8 @@
                 }
             };
             xhr.send();
+
+
         }
 
         // Appeler la fonction updateEverySecond toutes les 1000 millisecondes (1 seconde)
