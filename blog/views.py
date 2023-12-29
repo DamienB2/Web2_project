@@ -96,6 +96,7 @@ def statistics(request):
 
 
 def play(request, pk):
+    #IL FAUT F5 POUR POUVOIR VOIR LA PHOTO DE L'ADVERSAIRE SI ON EST L'AUTHEUR ET QU'ON EST DEJA DANS LA PARTIE AVANT QUE L'ADVERSAIRE REJOIGNE
     post = Post.objects.get(pk=pk)
     tiles = post.grid_size
 
@@ -109,6 +110,6 @@ def play(request, pk):
             except Post.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'Post not found'})
         else:
-            return JsonResponse({'played_positions': post.played_positions, 'opponent': post.opponent})
+            return JsonResponse({'played_positions': post.played_positions})
 
     return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})
