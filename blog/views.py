@@ -99,7 +99,11 @@ def play(request, pk):
     if request.method == 'POST':
         position_id = request.POST.get('position_id')
         surrender = request.POST.get('surrender')
+        leave = request.POST.get('leave')
         winner = request.POST.get('winner')
+
+        if leave:
+            return redirect('blog-home')
 
         if winner != '':
             if winner == 'X':

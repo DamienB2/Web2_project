@@ -22,10 +22,13 @@
             </table>
         </div>
         <!-- bas de page -->
-        <div class="d-flex justify-content-center mt-5">
+        <div class="d-flex justify-content-center mt-2">
+            <h4 id="leave_text"></h4>
+        </div>
+        <div class="d-flex justify-content-center">
             <form method="POST">
             {% csrf_token %}
-                <input type="submit" class="btn btn-danger" value="leave" name="surrender">
+                <input type="submit" class="btn btn-danger" id="leave" value="leave" name="surrender">
             </form>
         </div>
     </div>
@@ -108,16 +111,25 @@
 
             // if winner change grid state and show notification
             if (winner !== "") {
-            // Désactive tous les boutons de la grille
-            for (var i = 0; i < nbCases; i++) {
-                for (var j = 0; j < nbCases; j++) {
-                    var Img = document.getElementById('BlockImg' + j + '_' + i);
-                    Img.onclick = null; // Désactive l'événement onclick
+                // Désactive tous les boutons de la grille
+                for (var i = 0; i < nbCases; i++) {
+                    for (var j = 0; j < nbCases; j++) {
+                        var Img = document.getElementById('BlockImg' + j + '_' + i);
+                        Img.onclick = null; // Désactive l'événement onclick
+                    }
                 }
+
+                var leave_button = document.getElementById('leave');
+                if (leave_button) {
+                    leave_button.name = 'leave';
+                }
+
+                var leave_text = document.getElementById('leave_text');
+                if (leave_text) {
+                    leave_text.innerHTML = 'yolooo';
+                }
+
             }
-        }
-
-
         }
 
         // Appeler la fonction updateEverySecond toutes les 1000 millisecondes (1 seconde)
