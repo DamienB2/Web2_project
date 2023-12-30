@@ -2,24 +2,26 @@
 {% block content %}
     <h1 style="text-decoration: underline; text-align: center">List of all playable games</h1>
     {% for post in posts %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-                <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
-              <a class="mr-2" href="#">{{ post.author }}</a>
-              <small class="text-muted">{{ post.date_posted | date:"F j, Y" }}</small>
-                {% if post.is_public == True %}
-                    <small class="float-right">public</small>
-                {% else %}
-                    <small class="float-right">private</small>
-                {% endif %}
-            </div>
-            <h2>
-                <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
-                <a class="btn btn-success btn-sm mr-1 mt-1 mb-1 float-right" href="{% url 'post-detail' post.id %}">See details</a>
-            </h2>
-          </div>
-        </article>
+        {% if post.is_finished == False %}
+            <article class="media content-section">
+              <div class="media-body">
+                <div class="article-metadata">
+                    <img class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+                  <a class="mr-2" href="#">{{ post.author }}</a>
+                  <small class="text-muted">{{ post.date_posted | date:"F j, Y" }}</small>
+                    {% if post.is_public == True %}
+                        <small class="float-right">public</small>
+                    {% else %}
+                        <small class="float-right">private</small>
+                    {% endif %}
+                </div>
+                <h2>
+                    <a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a>
+                    <a class="btn btn-success btn-sm mr-1 mt-1 mb-1 float-right" href="{% url 'post-detail' post.id %}">See details</a>
+                </h2>
+              </div>
+            </article>
+        {% endif %}
     {% endfor %}
 {% endblock content %}
 

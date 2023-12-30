@@ -110,6 +110,7 @@ def play(request, pk):
                     post.add_winner(post.author)
 
                 messages.warning(request, "You surrendered the game")
+
                 return redirect('blog-home')
             else:
                 messages.warning(request, "You won because your opponent left the game")
