@@ -102,7 +102,13 @@ def play(request, pk):
 
         if surrender:
             surrender_player = request.user
-            messages.warning(request, surrender_player)
+
+            if surrender_player == post.author:
+                post.add_winner(post.opponent)
+            else:
+                post.add_winner(post.author)
+
+            messages.warning(request, "You surrendered the game")
             return redirect('blog-home')
 
         if position_id:

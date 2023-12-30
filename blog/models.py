@@ -22,7 +22,7 @@ class Post(models.Model):
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author')
     opponent = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='opponent')
-    winner = models.CharField(max_length=100, default="No winner")
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='winner')
     played_positions = models.JSONField(default=list)
     players = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='player')
 
@@ -34,6 +34,10 @@ class Post(models.Model):
 
     def add_opponent(self, opponent):
         self.opponent = opponent
+        self.save()
+
+    def add_winner(self, winner):
+        self.winner = winner
         self.save()
 
 
