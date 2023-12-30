@@ -99,6 +99,13 @@ def play(request, pk):
     if request.method == 'POST':
         position_id = request.POST.get('position_id')
         surrender = request.POST.get('surrender')
+        winner = request.POST.get('winner')
+
+        if winner != '':
+            if winner == 'X':
+                post.add_winner(post.author)
+            else:
+                post.add_winner(post.opponent)
 
         if surrender:
             surrender_player = request.user
@@ -115,8 +122,6 @@ def play(request, pk):
             else:
                 messages.warning(request, "You won because your opponent left the game")
                 return redirect('blog-home')
-
-
 
         if position_id:
             try:
