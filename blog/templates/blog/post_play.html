@@ -61,9 +61,6 @@
 
         //get all position each second
         function getPlayedPositions() {
-            if (checkWinner()) {
-                    winner = currentPlayer.toString();
-            }
 
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '{% url 'post-play' post.id %}', true);
@@ -103,8 +100,29 @@
 
         }
 
+        function check(){
+            //look for a winner
+            if (checkWinner()) {
+                    winner = currentPlayer.toString();
+            }
+
+            // if winner change grid state and show notification
+            if (winner !== "") {
+            // Désactive tous les boutons de la grille
+            for (var i = 0; i < nbCases; i++) {
+                for (var j = 0; j < nbCases; j++) {
+                    var Img = document.getElementById('BlockImg' + j + '_' + i);
+                    Img.onclick = null; // Désactive l'événement onclick
+                }
+            }
+        }
+
+
+        }
+
         // Appeler la fonction updateEverySecond toutes les 1000 millisecondes (1 seconde)
         setInterval(getPlayedPositions, 1000);
+        setInterval(check,100)
 
 
         //When a button is clicked send data to the database
@@ -142,7 +160,7 @@
                 // Envoyez les données de formulaire
                 xhr.send(new URLSearchParams(formData));
 
-                getPlayedPositions();
+                check();
 
                 movesCount++;
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
