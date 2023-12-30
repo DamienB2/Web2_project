@@ -24,6 +24,8 @@ class Post(models.Model):
     opponent = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='opponent')
     winner = models.CharField(max_length=100, default="No winner")
     played_positions = models.JSONField(default=list)
+    players = models.ForeignKey(User, on_delete=models.CASCADE, default=None, null=True, related_name='player')
+
 
     def add_position(self, position):
         # Méthode pour ajouter une position à la liste

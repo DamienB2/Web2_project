@@ -23,15 +23,22 @@
         </div>
         <!-- bas de page -->
         <div class="d-flex justify-content-center mt-5">
-            <button class="btn btn-danger">Surrender</button>
+            <form method="POST">
+            {% csrf_token %}
+                <input type="submit" class="btn btn-danger" value="Surrender" name="surrender">
+            </form>
         </div>
     </div>
 
     <script>
+    //PAS DE SYNCHRONISATION
+    //Le current player est en local.
+    //si player 1 pose sa photo, player 2 ne sait pas que player 1 a posé
         var currentPlayer = 'X';
         var movesCount = 0;
         var postID = {{ post.id }};
-        var nbCases = {{ post.grid_size }}
+        var nbCases = {{ post.grid_size }};
+        var oldPlayerPositionsArrayLenght = 0;
 
 
         function getCookie(name) {
@@ -50,6 +57,7 @@
             return cookieValue;
         }
 
+
         //get all position each second
         function getPlayedPositions() {
             var xhr = new XMLHttpRequest();
@@ -63,6 +71,7 @@
 
                     var playedPositionsArray = datas.played_positions;
 
+
                     for (let i = 0; i < playedPositionsArray.length; i++) {
                         var positionParts = playedPositionsArray[i].split(';');
                         var currentPlayer = positionParts[0];
@@ -74,7 +83,6 @@
                             Img.src = currentPlayer === 'X' ? '{{ post.author.profile.symbol.url }}' : '{{ post.opponent.profile.symbol.url}}';
                         }
                     }
-
 
                 } else {
                     // Gestion des erreurs

@@ -91,10 +91,6 @@ def PostPlay(request, pk):
     return render(request, 'blog/post_detail.html', {'title': 'Details', 'post': post})
 
 
-def statistics(request):
-    return render(request, 'blog/statistics.html', {'title': 'Statistics'})
-
-
 def play(request, pk):
     #IL FAUT F5 POUR POUVOIR VOIR LA PHOTO DE L'ADVERSAIRE SI ON EST L'AUTHEUR ET QU'ON EST DEJA DANS LA PARTIE AVANT QUE L'ADVERSAIRE REJOIGNE
     post = Post.objects.get(pk=pk)
@@ -102,6 +98,12 @@ def play(request, pk):
 
     if request.method == 'POST':
         position_id = request.POST.get('position_id')
+        surrender = request.POST.get('surrender')
+
+        if surrender:
+            surrender_player = request.user
+            messages.warning(request, surrender_player)
+            return redirect('blog-home')
 
         if position_id:
             try:
@@ -113,3 +115,7 @@ def play(request, pk):
             return JsonResponse({'played_positions': post.played_positions})
 
     return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})
+
+
+def statistics(request):
+    return render(request, 'blog/statistics.html', {'title': 'Statistics'})
