@@ -142,6 +142,7 @@
                 // Envoyez les données de formulaire
                 xhr.send(new URLSearchParams(formData));
 
+                getPlayedPositions();
 
                 movesCount++;
                 currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
