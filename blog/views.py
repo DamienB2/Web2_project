@@ -92,12 +92,12 @@ def PostPlay(request, pk):
 
 
 def play(request, pk):
-    #IL FAUT F5 POUR POUVOIR VOIR LA PHOTO DE L'ADVERSAIRE SI ON EST L'AUTHEUR ET QU'ON EST DEJA DANS LA PARTIE AVANT QUE L'ADVERSAIRE REJOIGNE
     post = Post.objects.get(pk=pk)
     tiles = post.grid_size
 
     if request.method == 'POST':
         position_id = request.POST.get('position_id')
+        players = request.POST.get('players')
         surrender = request.POST.get('surrender')
         leave = request.POST.get('leave')
         winner = request.POST.get('winner')
@@ -105,7 +105,7 @@ def play(request, pk):
         if leave:
             return redirect('blog-home')
 
-        if winner != '':
+        if winner != "":
             if winner == 'X':
                 post.add_winner(post.author)
             else:
@@ -130,14 +130,19 @@ def play(request, pk):
         if position_id:
             try:
                 post.add_position(position_id)
+                post.change_player(players)
                 return JsonResponse({'status': 'success'})
             except Post.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'Post not found'})
         else:
-            return JsonResponse({'played_positions': post.played_positions})
+            return JsonResponse({'played_positions': post.played_positions, 'players': post.players})
 
     return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})
 
 
 def statistics(request):
-    return render(request, 'blog/statistics.html', {'title': 'Statistics'})
+    context = {
+        'posts': Post.objects.all(),
+        'title' : 'Statistics'
+    }
+    return render(request, 'blog/statistics.html', context)

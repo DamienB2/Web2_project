@@ -1,4 +1,53 @@
 {% extends "blog/base.html" %}
 {% block content %}
-     <h1>Here you will be able to see all the statistics!</h1>
+    <!-- title -->
+    <div>
+        <h3 style="text-decoration: underline;">Activity</h3>
+    </div>
+    <!-- Chart -->
+    {% if user.is_authenticated %}
+        <div>
+            <canvas id="myChart" width="400" height="200"></canvas>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    var dataTab = [];
+                    {% for post in posts %}
+                        {% if user == post.opponent or user == post.author %}
+                            dataTab.push('{{ post.date_posted }}');
+                        {% endif %}
+                    {% endfor %}
+
+                    var activityData = {
+                        labels: dataTab, // Utiliser les dates de dataTab comme labels
+                        datasets: [{
+                            label: '{{ user.username }} Activity',
+                            data: [5, 8, 12, 6, 10], // Remplacez ceci par vos données réelles
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1
+                        }]
+                    };
+
+                    var ctx = document.getElementById('myChart').getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: activityData,
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+            </script>
+        </div>
+    {% else %}
+        <div>
+            <h4 style="color: red; background-color: #ffe6e6; padding: 10px;">
+                You will not be able to see the statistics if you are not connected.
+            </h4>
+        </div>
+    {% endif %}
 {% endblock content %}

@@ -37,12 +37,10 @@
     //PAS DE SYNCHRONISATION
     //Le current player est en local.
     //si player 1 pose sa photo, player 2 ne sait pas que player 1 a posé
-        var currentPlayer = 'X';
-        var movesCount = 0;
+        var currentPlayer;
         var postID = {{ post.id }};
         var nbCases = {{ post.grid_size }};
-        var oldPlayerPositionsArrayLenght = 0;
-        var winner = "";
+        var winner = '';
 
 
         function getCookie(name) {
@@ -61,6 +59,8 @@
             return cookieValue;
         }
 
+        setInterval(getPlayedPositions, 1000);
+        setInterval(check, 100);
 
         //get all position each second
         function getPlayedPositions() {
@@ -74,18 +74,22 @@
                 if (xhr.status === 200) {
                     var datas = JSON.parse(xhr.responseText);
 
-                    var playedPositionsArray = datas.played_positions;
+                    //get the player
+                    var player = datas.players;
+                    currentPlayer = player;
 
+                    //get all the positions already played
+                    var playedPositionsArray = datas.played_positions;
 
                     for (let i = 0; i < playedPositionsArray.length; i++) {
                         var positionParts = playedPositionsArray[i].split(';');
-                        var currentPlayer = positionParts[0];
+                        var current_Player = positionParts[0];
                         var buttonId = positionParts[1];
 
                         // Mise à jour du bouton avec l'ID correspondant
                         var Img = document.getElementById(buttonId);
                         if (Img) {
-                            Img.src = currentPlayer === 'X' ? '{{ post.author.profile.symbol.url }}' : '{{ post.opponent.profile.symbol.url}}';
+                            Img.src = current_Player === 'X' ? '{{ post.author.profile.symbol.url }}' : '{{ post.opponent.profile.symbol.url}}';
                         }
                     }
 
@@ -97,20 +101,18 @@
             var formData = new FormData();
             formData.append('winner', winner);
 
-            // Envoyez les données de formulaire
             xhr.send(new URLSearchParams(formData));
-
 
         }
 
         function check(){
             //look for a winner
-            if (checkWinner()) {
+            if (checkWinner() && winner !== '') {
                     winner = currentPlayer.toString();
             }
 
             // if winner change grid state and show notification
-            if (winner !== "") {
+            if (winner !== '') {
                 // Désactive tous les boutons de la grille
                 for (var i = 0; i < nbCases; i++) {
                     for (var j = 0; j < nbCases; j++) {
@@ -126,15 +128,11 @@
 
                 var leave_text = document.getElementById('leave_text');
                 if (leave_text) {
-                    leave_text.innerHTML = 'The game is over, you can now safely click on leave.';
+                    leave_text.innerHTML = 'The game is over, you can now safely leave the game.';
                 }
 
             }
         }
-
-        // Appeler la fonction updateEverySecond toutes les 1000 millisecondes (1 seconde)
-        setInterval(getPlayedPositions, 1000);
-        setInterval(check,100)
 
 
         //When a button is clicked send data to the database
@@ -148,6 +146,7 @@
                 } else {
                     Img.src = '{{ post.opponent.profile.symbol.url }}';
                 }
+
 
                 // Envoi de l'ID du bouton à la vue Django via AJAX avec le jeton CSRF
                 var xhr = new XMLHttpRequest();
@@ -168,15 +167,15 @@
 
                 var formData = new FormData();
                 formData.append('position_id', currentPlayer+ ";BlockImg"+ col + "_" + row);
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                formData.append('players', currentPlayer);
 
                 // Envoyez les données de formulaire
                 xhr.send(new URLSearchParams(formData));
 
-                check();
-
-                movesCount++;
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
             }
+
+            check();
         }
 
         function checkWinner() {
@@ -232,8 +231,6 @@
                 return false;
             }
         }
-
-        // All symbols in the alignment are the same
         return true;
     }
 
