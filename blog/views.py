@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -143,6 +144,23 @@ def play(request, pk):
 def statistics(request):
     context = {
         'posts': Post.objects.all(),
-        'title' : 'Statistics'
+        'title': 'Statistics',
+        'Ranked_posts': []
     }
+
+    if request.method == 'POST':
+        grid_size = int(request.POST.get('grid'))
+        alignment = int(request.POST.get('Alignment'))
+
+        matching_posts = Post.objects.filter(grid_size=grid_size, alignment=alignment)
+        ranked_posts = matching_posts.values('winner__username').annotate(wins_count=Count('winner')).order_by('-wins_count')
+
+        context = {
+            'posts': Post.objects.all(),
+            'title': 'Statistics',
+            'Ranked_posts': ranked_posts
+        }
+
+        return render(request, 'blog/statistics.html', context)
+
     return render(request, 'blog/statistics.html', context)

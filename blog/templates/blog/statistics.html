@@ -1,53 +1,117 @@
 {% extends "blog/base.html" %}
 {% block content %}
+{% if user.is_authenticated %}
     <!-- title -->
     <div>
         <h3 style="text-decoration: underline;">Activity</h3>
     </div>
     <!-- Chart -->
-    {% if user.is_authenticated %}
-        <div>
-            <canvas id="myChart" width="400" height="200"></canvas>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    var dataTab = [];
-                    {% for post in posts %}
-                        {% if user == post.opponent or user == post.author %}
-                            dataTab.push('{{ post.date_posted }}');
-                        {% endif %}
-                    {% endfor %}
+    <div>
+        <canvas id="myChart" width="400" height="200"></canvas>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var dataTab = [];
+                {% for post in posts %}
+                    {% if user == post.opponent or user == post.author %}
+                        dataTab.push('{{ post.date_posted.date }};');
+                    {% endif %}
+                {% endfor %}
 
-                    var activityData = {
-                        labels: dataTab, // Utiliser les dates de dataTab comme labels
-                        datasets: [{
-                            label: '{{ user.username }} Activity',
-                            data: [5, 8, 12, 6, 10], // Remplacez ceci par vos données réelles
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            borderWidth: 1
-                        }]
-                    };
+                function countDuplicatesByDate(data) {
+                    var duplicatesCount = [];
+                    var currentCount = 1;
 
-                    var ctx = document.getElementById('myChart').getContext('2d');
-                    var myChart = new Chart(ctx, {
-                        type: 'line',
-                        data: activityData,
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
+                    for (var i = 1; i < data.length; i++) {
+                        if (data[i] !== data[i - 1]) {
+                            duplicatesCount.push(currentCount);
+                            currentCount = 1;
+                        } else {
+                            currentCount++;
+                        }
+                    }
+
+                    // Ajouter le dernier élément
+                    duplicatesCount.push(currentCount);
+                    return duplicatesCount;
+                }
+
+                var uniqueDates = Array.from(new Set(dataTab));
+                var duplicatesByDate = Array.from(countDuplicatesByDate(dataTab));
+
+                var activityData = {
+                    labels: uniqueDates,
+                    datasets: [{
+                        label: '{{ user.username }} Activity',
+                        data: duplicatesByDate, // Remplacez ceci par vos données réelles
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                };
+
+                var ctx = document.getElementById('myChart').getContext('2d');
+                var myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: activityData,
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
                             }
                         }
-                    });
+                    }
                 });
-            </script>
-        </div>
-    {% else %}
+
+                console.log("Nombre de doublons pour chaque date:", duplicatesCount);
+            });
+        </script>
+    </div>
+
+     <!-- title -->
+    <div>
+        <h3 style="text-decoration: underline;" class="mt-5">Ranking</h3>
+    </div>
+    <!-- Ranking -->
+    <form method="post" action="{% url 'blog-statistics' %}">
+        {% csrf_token %}
         <div>
-            <h4 style="color: red; background-color: #ffe6e6; padding: 10px;">
-                You will not be able to see the statistics if you are not connected.
-            </h4>
+            Select the grid size:
+            <input name="grid" type="number" min="3" value="3">
+            and select the alignment:
+            <input name="Alignment" type="number" min="3" value="3">
+            <button type="submit">Generate Grid</button>
         </div>
-    {% endif %}
+    </form>
+    <div class="mt-3">
+        {% if Ranked_posts %}
+            <h4>Leaderboard</h4>
+            <table class="mb-5 table-bordered">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Username</th>
+                        <th>Wins</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in Ranked_posts %}
+                        {% if post.winner__username != None %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ post.winner__username }}</td>
+                            <td>{{ post.wins_count }}</td>
+                        </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% else %}
+    <div>
+        <h4 style="color: red; background-color: #ffe6e6; padding: 10px;">
+            You will not be able to see the statistics if you are not connected.
+        </h4>
+    </div>
+{% endif %}
 {% endblock content %}
