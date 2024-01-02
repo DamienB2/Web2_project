@@ -103,14 +103,21 @@ def play(request, pk):
         leave = request.POST.get('leave')
         winner = request.POST.get('winner')
 
+        if post.winner is not None:
+            return JsonResponse({'played_positions': post.played_positions, 'players': post.players, 'winner': post.players})
+
         if leave:
             return redirect('blog-home')
 
         if winner != "":
+            if position_id:
+                post.add_position(position_id)
+
             if winner == 'X':
                 post.add_winner(post.author)
             else:
                 post.add_winner(post.opponent)
+
 
         if surrender:
             surrender_player = request.user
@@ -136,7 +143,7 @@ def play(request, pk):
             except Post.DoesNotExist:
                 return JsonResponse({'status': 'error', 'message': 'Post not found'})
         else:
-            return JsonResponse({'played_positions': post.played_positions, 'players': post.players})
+            return JsonResponse({'played_positions': post.played_positions, 'players': post.players, 'winner': ''})
 
     return render(request, 'blog/post_play.html', {'title': 'Game', 'nbCases': range(tiles), 'post': post})
 
