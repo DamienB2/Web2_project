@@ -142,25 +142,26 @@ def play(request, pk):
 
 
 def statistics(request):
+    grid_size = 3 #default value
+    alignment = 3 #default value
+
     context = {
         'posts': Post.objects.all(),
         'title': 'Statistics',
-        'Ranked_posts': []
+        'Ranked_posts': generate_ranked_posts(grid_size, alignment)
     }
 
     if request.method == 'POST':
         grid_size = int(request.POST.get('grid'))
         alignment = int(request.POST.get('Alignment'))
 
-        matching_posts = Post.objects.filter(grid_size=grid_size, alignment=alignment)
-        ranked_posts = matching_posts.values('winner__username').annotate(wins_count=Count('winner')).order_by('-wins_count')
-
-        context = {
-            'posts': Post.objects.all(),
-            'title': 'Statistics',
-            'Ranked_posts': ranked_posts
-        }
-
-        return render(request, 'blog/statistics.html', context)
+        context['Ranked_posts'] = generate_ranked_posts(grid_size, alignment)
 
     return render(request, 'blog/statistics.html', context)
+
+def generate_ranked_posts(grid_size, alignment):
+    matching_posts = Post.objects.filter(grid_size=grid_size, alignment=alignment)
+    ranked_posts = matching_posts.values('winner__username').annotate(wins_count=Count('winner')).order_by('-wins_count')
+    return ranked_posts
+
+
