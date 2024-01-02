@@ -60,7 +60,6 @@
         }
 
         setInterval(getPlayedPositions, 1000);
-        setInterval(check, 100);
 
         //get all position each second
         function getPlayedPositions() {
@@ -102,12 +101,13 @@
             formData.append('winner', winner);
 
             xhr.send(new URLSearchParams(formData));
-
+            
+            check();
         }
 
         function check(){
             //look for a winner
-            if (checkWinner() && winner !== '') {
+            if (checkWinner()) {
                     winner = currentPlayer.toString();
             }
 
@@ -174,7 +174,6 @@
                 xhr.send(new URLSearchParams(formData));
 
             }
-
             check();
         }
 
