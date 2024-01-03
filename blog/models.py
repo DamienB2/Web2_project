@@ -39,6 +39,9 @@ class Post(models.Model):
 
     def add_winner(self, winner):
         self.winner = winner
+        self.save()
+
+    def set_finished(self):
         self.is_finished = True
         self.save()
 

@@ -22,7 +22,7 @@
             </table>
         </div>
         <!-- bas de page -->
-        <div class="d-flex justify-content-center mt-2">
+        <div class="d-flex justify-content-center mt-2 mb-2">
             <small id="leave_text">If you click on leave, you will surrender.</small>
         </div>
         <div class="d-flex justify-content-center">
@@ -41,6 +41,7 @@
         var postID = {{ post.id }};
         var nbCases = {{ post.grid_size }};
         var winner = '';
+        var game_draw = false;
 
 
         function getCookie(name) {
@@ -103,6 +104,7 @@
             var formData = new FormData();
             formData.append('winner', winner);
             xhr.send(new URLSearchParams(formData));
+            checkDraw();
             game_finished();
         }
 
@@ -174,17 +176,24 @@
                         Img.onclick = null; // Désactive l'événement onclick
                     }
                 }
+                change_leave_button();
+            }
+        }
 
-                var leave_button = document.getElementById('leave');
+        function change_leave_button(){
+
+            var leave_button = document.getElementById('leave');
                 if (leave_button) {
                     leave_button.name = 'leave';
                 }
 
-                var leave_text = document.getElementById('leave_text');
-                if (leave_text) {
-                    leave_text.innerHTML = 'The game is over, you can now safely leave the game.';
+            var leave_text = document.getElementById('leave_text');
+            if (leave_text) {
+                if(game_draw){
+                    leave_text.innerHTML = 'The game is draw, you can now safely leave the game.';
+                }else{
+                    leave_text.innerHTML = 'There is a winner, you can now safely leave the game.';
                 }
-
             }
         }
 
@@ -242,6 +251,30 @@
             }
         }
         return true;
+    }
+
+    function checkDraw() {
+        var draw = true;
+        // Parcours de toutes les positions
+        for (var i = 0; i < nbCases; i++) {
+            for (var j = 0; j < nbCases; j++) {
+                var Img = document.getElementById('BlockImg' + j + '_' + i);
+
+                // Si une case est vide, le jeu n'est pas un match nul
+                if (Img.src === '') {
+                    draw = false;
+                    break;
+                }
+            }
+            if (!draw) {
+                break;
+            }
+        }
+
+        if (draw && winner === '') {
+            game_draw = true;
+            change_leave_button();
+        }
     }
 
     </script>
