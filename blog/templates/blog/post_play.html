@@ -116,53 +116,56 @@
 
         //When a button is clicked send data to the database
         function handleClick(row, col) {
-            var Img = document.getElementById('BlockImg' + col + '_' + row);
 
-            if (Img.src === '') {
-                // Mise à jour de l'image
-                if (currentPlayer === 'X') {
-                    Img.src = '{{ post.author.profile.symbol.url }}';
-                } else {
-                    Img.src = '{{ post.opponent.profile.symbol.url }}';
-                }
+            if((('{{ post.author }}' == '{{ user }}') && (currentPlayer == 'X')) || (('{{ post.opponent }}' == '{{ user }}') && (currentPlayer == 'O'))){
+                var Img = document.getElementById('BlockImg' + col + '_' + row);
 
-
-
-                // Envoi de l'ID du bouton à la vue Django via AJAX avec le jeton CSRF
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '{% url 'post-play' post.id %}', true);
-
-                // Ajout du jeton CSRF à l'en-tête de la requête
-                xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
-
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
-                        // Mise à jour réussie
-                        console.log('Position updated successfully.');
+                if (Img.src === '') {
+                    // Mise à jour de l'image
+                    if (currentPlayer === 'X') {
+                        Img.src = '{{ post.author.profile.symbol.url }}';
                     } else {
-                        // Gestion des erreurs
-                        console.error('Failed to update position.');
+                        Img.src = '{{ post.opponent.profile.symbol.url }}';
                     }
-                };
-
-                check();
-
-                var formData = new FormData();
-                formData.append('position_id', currentPlayer + ";BlockImg" + col + "_" + row);
-                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-                formData.append('players', currentPlayer);
-                formData.append('winner', winner);
 
 
-                // Envoyez les données de formulaire
-                xhr.send(new URLSearchParams(formData));
 
-                game_finished();
+                    // Envoi de l'ID du bouton à la vue Django via AJAX avec le jeton CSRF
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '{% url 'post-play' post.id %}', true);
+
+                    // Ajout du jeton CSRF à l'en-tête de la requête
+                    xhr.setRequestHeader('X-CSRFToken', getCookie('csrftoken'));
+
+                    xhr.onload = function () {
+                        if (xhr.status === 200) {
+                            // Mise à jour réussie
+                            console.log('Position updated successfully.');
+                        } else {
+                            // Gestion des erreurs
+                            console.error('Failed to update position.');
+                        }
+                    };
+
+                    check();
+
+                    var formData = new FormData();
+                    formData.append('position_id', currentPlayer + ";BlockImg" + col + "_" + row);
+                    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                    formData.append('players', currentPlayer);
+                    formData.append('winner', winner);
+
+
+                    // Envoyez les données de formulaire
+                    xhr.send(new URLSearchParams(formData));
+
+                    game_finished();
+                }
             }
         }
 
         function game_finished(){
-             // if winner change grid state and show notification
+            // if winner change grid state and show notification
             if (winner !== '') {
                 // Désactive tous les boutons de la grille
                 for (var i = 0; i < nbCases; i++) {

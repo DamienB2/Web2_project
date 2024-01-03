@@ -18,6 +18,7 @@ class Post(models.Model):
     alignment = models.IntegerField(default=3, validators=[MinValueValidator(3)])
     is_public = models.BooleanField(default=True)
     is_finished = models.BooleanField(default=False)
+    is_surrendered = models.BooleanField(default=False)
     access_code = models.CharField(max_length=6, default=generate_random_access_code)
     date_posted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='author')
@@ -43,6 +44,10 @@ class Post(models.Model):
 
     def change_player(self, players):
         self.players = players
+        self.save()
+
+    def surrendered(self):
+        self.is_surrendered = True
         self.save()
 
     def __str__(self):

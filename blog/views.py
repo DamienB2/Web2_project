@@ -103,10 +103,25 @@ def play(request, pk):
         leave = request.POST.get('leave')
         winner = request.POST.get('winner')
 
-        if post.winner is not None:
-            return JsonResponse({'played_positions': post.played_positions, 'players': post.players, 'winner': post.players})
+        if surrender:
+            surrender_player = request.user
+
+            if post.winner is None:
+                post.surrendered()
+                if surrender_player == post.author:
+                    post.add_winner(post.opponent)
+                else:
+                    post.add_winner(post.author)
+
+                messages.warning(request, "You surrendered the game")
+
+                return redirect('blog-home')
 
         if leave:
+
+            if post.is_surrendered:
+                messages.warning(request, "You won because your opponent left the game")
+
             return redirect('blog-home')
 
         if winner != "":
@@ -118,22 +133,9 @@ def play(request, pk):
             else:
                 post.add_winner(post.opponent)
 
+        if post.winner is not None:
+            return JsonResponse({'played_positions': post.played_positions, 'players': post.players, 'winner': post.players})
 
-        if surrender:
-            surrender_player = request.user
-
-            if post.winner is None:
-                if surrender_player == post.author:
-                    post.add_winner(post.opponent)
-                else:
-                    post.add_winner(post.author)
-
-                messages.warning(request, "You surrendered the game")
-
-                return redirect('blog-home')
-            else:
-                messages.warning(request, "You won because your opponent left the game")
-                return redirect('blog-home')
 
         if position_id:
             try:
