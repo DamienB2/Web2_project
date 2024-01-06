@@ -34,9 +34,6 @@
     </div>
 
     <script>
-    //PAS DE SYNCHRONISATION
-    //Le current player est en local.
-    //si player 1 pose sa photo, player 2 ne sait pas que player 1 a posé
         var currentPlayer;
         var postID = {{ post.id }};
         var nbCases = {{ post.grid_size }};
@@ -50,7 +47,6 @@
                 var cookies = document.cookie.split(';');
                 for (var i = 0; i < cookies.length; i++) {
                     var cookie = cookies[i].trim();
-                    // Recherche du jeton CSRF dans le cookie
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
@@ -118,7 +114,7 @@
 
         //When a button is clicked send data to the database
         function handleClick(row, col) {
-
+            //si ce n'est pas mon tour, je ne peut pas jouer
             if((('{{ post.author }}' == '{{ user }}') && (currentPlayer == 'X')) || (('{{ post.opponent }}' == '{{ user }}') && (currentPlayer == 'O'))){
                 var Img = document.getElementById('BlockImg' + col + '_' + row);
 
